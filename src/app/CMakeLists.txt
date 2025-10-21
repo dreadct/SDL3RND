@@ -8,7 +8,8 @@ set(TARGET_NAME app)
 # Source code
 set(TARGET_SRC_DIR "${PROJECT_SRC_DIR}/${TARGET_NAME}")
 set(TARGET_SOURCES
-    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/windows/main.cpp>
+    $<$<PLATFORM_ID:Darwin>:${TARGET_SRC_DIR}/unix/main.cpp>
+    $<$<PLATFORM_ID:Linux>:${TARGET_SRC_DIR}/unix/main.cpp>
     $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/windows/main.cpp>
 )
 
