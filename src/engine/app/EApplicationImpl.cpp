@@ -33,7 +33,7 @@ const std::vector<std::string>& EApplication::Impl::getCommandLineArguments() co
 SDL_AppResult EApplication::Impl::init(
 ) noexcept {
     try {
-        appWindow = std::make_unique<EAppWindow>("", 800, 600);
+        appWindow = std::make_unique<EAppWindow>("", 800, 600, true);
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
         SDL_Log("Failed to init EApplication: %s", e.what());
