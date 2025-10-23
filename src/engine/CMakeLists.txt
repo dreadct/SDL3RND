@@ -19,6 +19,13 @@ set(TARGET_SOURCES
     # app window
     ${TARGET_SRC_DIR}/app/window/EAppWindow.h
     ${TARGET_SRC_DIR}/app/window/EAppWindow.cpp
+    # displays
+    ${TARGET_SRC_DIR}/displays/EDisplay.h
+    ${TARGET_SRC_DIR}/displays/EDisplay.cpp
+    ${TARGET_SRC_DIR}/displays/EDisplayMode.h
+    ${TARGET_SRC_DIR}/displays/EDisplayMode.cpp
+    ${TARGET_SRC_DIR}/displays/EDisplayService.h
+    ${TARGET_SRC_DIR}/displays/EDisplayService.cpp
 )
 
 # Dependencies

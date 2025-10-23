@@ -26,6 +26,12 @@ EAppWindow::EAppWindow(
         error += SDL_GetError();
         throw std::runtime_error(error);
     }
+
+    if (isFullscreen) {
+        // SDL_DisplayMode mode();
+
+        // SDL_SetWindowFullscreenMode(window, mode);
+    }
 }
 
 EAppWindow::~EAppWindow() {

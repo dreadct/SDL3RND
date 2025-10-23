@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "window/EAppWindow.h"
+#include "../displays/EDisplayService.h"
 
 class EApplication::Impl {
 private:
@@ -11,6 +12,7 @@ private:
 
     EAppWindowUPtr appWindow;
     std::vector<std::string> commandLineArguments;
+    EDisplayServiceSPtr displayService;
 
 public:
     // Class lifecycle
