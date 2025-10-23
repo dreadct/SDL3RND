@@ -16,6 +16,9 @@ set(TARGET_SOURCES
     ${TARGET_SRC_DIR}/app/EApplication.cpp
     ${TARGET_SRC_DIR}/app/EApplicationImpl.h
     ${TARGET_SRC_DIR}/app/EApplicationImpl.cpp
+    # app window
+    ${TARGET_SRC_DIR}/app/window/EAppWindow.h
+    ${TARGET_SRC_DIR}/app/window/EAppWindow.cpp
 )
 
 # Dependencies
