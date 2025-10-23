@@ -8,13 +8,19 @@
 EAppWindow::EAppWindow(
     const std::string& title,
     const uint32_t width,
-    const uint32_t height
+    const uint32_t height,
+    const bool isFullscreen
 ) {
+    SDL_WindowFlags flags = 0;
+    if (isFullscreen) {
+        flags |= SDL_WINDOW_FULLSCREEN;
+    }
+
     if ((window = SDL_CreateWindow(
         title.c_str(),
         (int)width,
         (int)height,
-        0
+        flags
     )) == nullptr) {
         std::string error = "Failed to init SDL window: ";
         error += SDL_GetError();
@@ -74,4 +80,9 @@ bool EAppWindow::isHidden() const {
 
 bool EAppWindow::show() {
     return SDL_ShowWindow(window);
+}
+
+bool EAppWindow::isFullscreen() const {
+    auto flags = SDL_GetWindowFlags(window);
+    return (flags & SDL_WINDOW_FULLSCREEN) != 0;
 }
