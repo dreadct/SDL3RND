@@ -3,10 +3,13 @@
 #include <string>
 #include <vector>
 
+#include "window/EAppWindow.h"
+
 class EApplication::Impl {
 private:
     // Private properties
 
+    EAppWindowUPtr appWindow;
     std::vector<std::string> commandLineArguments;
 
 public:

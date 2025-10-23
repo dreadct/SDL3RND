@@ -33,6 +33,7 @@ const std::vector<std::string>& EApplication::Impl::getCommandLineArguments() co
 SDL_AppResult EApplication::Impl::init(
 ) noexcept {
     try {
+        appWindow = std::make_unique<EAppWindow>("", 800, 600);
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
         SDL_Log("Failed to init EApplication: %s", e.what());
@@ -44,9 +45,6 @@ SDL_AppResult EApplication::Impl::handleEvent(
     SDL_Event *event
 ) noexcept {
     if (event->type == SDL_EVENT_QUIT) {
-        return SDL_APP_SUCCESS;
-    } else if (event->type == SDL_EVENT_KEY_DOWN
-        && event->key.key == SDLK_ESCAPE) {
         return SDL_APP_SUCCESS;
     }
     return SDL_APP_CONTINUE;
