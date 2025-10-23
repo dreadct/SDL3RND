@@ -21,7 +21,8 @@ public:
     EAppWindow(
         const std::string& title,
         const uint32_t width,
-        const uint32_t height
+        const uint32_t height,
+        const bool isFullscreen = false
     );
     ~EAppWindow();
 
@@ -45,4 +46,6 @@ public:
     bool hide();
     bool isHidden() const;
     bool show();
+
+    bool isFullscreen() const;
 };
