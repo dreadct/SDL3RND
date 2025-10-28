@@ -31,7 +31,11 @@ EDisplaySPtrVec EDisplayService::getDisplays(
     if (pDisplayIDs == nullptr) {
         auto errorDesc = SDL_GetError();
         if (errorDesc != nullptr) {
-            SDL_Log("Failed to get displays list: %s", errorDesc);
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to get displays list: %s",
+                errorDesc
+            );
         }
         return {};
     }
@@ -58,7 +62,11 @@ EDisplaySPtr EDisplayService::getPrimaryDisplay(
     if (displayId == 0) {
         auto errorDesc = SDL_GetError();
         if (errorDesc != nullptr) {
-            SDL_Log("Failed to get a primary display: %s", errorDesc);
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to get a primary display: %s",
+                errorDesc
+            );
         }
         return nullptr;
     }

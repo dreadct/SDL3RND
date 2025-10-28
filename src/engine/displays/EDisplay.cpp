@@ -31,7 +31,8 @@ EDisplay& EDisplay::operator=(
 EDisplayModeSPtr EDisplay::getCurrentMode() const {
     auto mode = SDL_GetCurrentDisplayMode(displayID);
     if (mode == nullptr) {
-        SDL_Log(
+        SDL_LogError(
+            SDL_LOG_CATEGORY_VIDEO,
             "Failed to get a current display mode for display %du (%s): %s",
             displayID,
             getName().c_str(),
@@ -49,7 +50,8 @@ EDisplayModeSPtr EDisplay::getCurrentMode() const {
 EDisplayModeSPtr EDisplay::getDesktopMode() const {
     auto mode = SDL_GetDesktopDisplayMode(displayID);
     if (mode == nullptr) {
-        SDL_Log(
+        SDL_LogError(
+            SDL_LOG_CATEGORY_VIDEO,
             "Failed to get a desktop display mode for display %du (%s): %s",
             displayID,
             getName().c_str(),
@@ -68,7 +70,8 @@ EDisplayModeSPtrVec EDisplay::getFullscreenModes() const {
     int count = 0;
     auto pModes = SDL_GetFullscreenDisplayModes(displayID, &count);
     if (pModes == nullptr) {
-        SDL_Log(
+        SDL_LogError(
+            SDL_LOG_CATEGORY_VIDEO,
             "Failed to get fullscreen display modes for display %du (%s): %s",
             displayID,
             getName().c_str(),
@@ -98,7 +101,8 @@ EDisplayModeSPtrVec EDisplay::getFullscreenModes() const {
 std::string EDisplay::getName() const {
     auto cName = SDL_GetDisplayName(displayID);
     if (cName == nullptr) {
-        SDL_Log(
+        SDL_LogError(
+            SDL_LOG_CATEGORY_VIDEO,
             "Failed to get a display name for display %du: %s",
             displayID,
             SDL_GetError()

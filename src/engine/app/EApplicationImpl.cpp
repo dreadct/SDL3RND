@@ -38,33 +38,50 @@ SDL_AppResult EApplication::Impl::init(
     try {
         // init video system
         if (!SDL_Init(SDL_INIT_VIDEO)) {
-            SDL_Log("Failed to init SDL video system: %s", SDL_GetError());
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "Failed to init SDL video system: %s",
+                SDL_GetError()
+            );
         }
 
         // get a primary display
         auto primaryDisplay = displayService->getPrimaryDisplay();
         if (primaryDisplay == nullptr) {
-            SDL_Log("App can't run without a display, terminating...");
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "App can't run without a display, terminating..."
+            );
             return SDL_APP_FAILURE;
         }
 
         // get desktop display mode
         EDisplayModeSPtr desktopDisplayMode = primaryDisplay->getDesktopMode();
         if (!desktopDisplayMode) {
-            SDL_Log("App can't fullscreen without obtaining a primary display mode, terminating...");
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "App can't fullscreen without obtaining a primary display mode, terminating..."
+            );
             return SDL_APP_FAILURE;
         }
 
         auto [width, height] = desktopDisplayMode->getResolution();
         if (width == 0 || height == 0) {
-            SDL_Log("App can't fullscreen without obtaining a primary display resolution, terminating...");
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                "App can't fullscreen without obtaining a primary display resolution, terminating..."
+            );
             return SDL_APP_FAILURE;
         }
 
         appWindow = std::make_unique<EAppWindow>("", width, height, true);
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
-        SDL_Log("Failed to init EApplication: %s", e.what());
+        SDL_LogError(
+            SDL_LOG_CATEGORY_APPLICATION,
+            "Failed to init EApplication: %s",
+            e.what()
+        );
         return SDL_APP_FAILURE;
     }
 }
