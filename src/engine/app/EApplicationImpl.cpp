@@ -65,16 +65,7 @@ SDL_AppResult EApplication::Impl::init(
             return SDL_APP_FAILURE;
         }
 
-        auto [width, height] = desktopDisplayMode->getResolution();
-        if (width == 0 || height == 0) {
-            SDL_LogError(
-                SDL_LOG_CATEGORY_APPLICATION,
-                "App can't fullscreen without obtaining a primary display resolution, terminating..."
-            );
-            return SDL_APP_FAILURE;
-        }
-
-        appWindow = std::make_unique<EAppWindow>("", width, height, true);
+        appWindow = std::make_unique<EAppWindow>("", desktopDisplayMode);
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
         SDL_LogError(

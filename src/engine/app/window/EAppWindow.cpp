@@ -1,7 +1,11 @@
 #include "EAppWindow.h"
 
+#include <cassert>
 #include <stdexcept>
 #include <utility>
+
+#include "../../displays/EDisplay.h"
+#include "../../displays/EDisplayMode.h"
 
 // Class lifecycle
 
@@ -9,13 +13,8 @@ EAppWindow::EAppWindow(
     const std::string& title,
     const uint32_t width,
     const uint32_t height,
-    const bool isFullscreen
+    SDL_WindowFlags flags
 ) {
-    SDL_WindowFlags flags = 0;
-    if (isFullscreen) {
-        flags |= SDL_WINDOW_FULLSCREEN;
-    }
-
     if ((window = SDL_CreateWindow(
         title.c_str(),
         (int)width,
@@ -26,12 +25,71 @@ EAppWindow::EAppWindow(
         error += SDL_GetError();
         throw std::runtime_error(error);
     }
+}
 
-    if (isFullscreen) {
-        // SDL_DisplayMode mode();
+EAppWindow::EAppWindow(
+    const std::string& title,
+    const uint32_t width,
+    const uint32_t height
+) : EAppWindow(
+    title,
+    width,
+    height,
+    0
+) {
+    assert(width > 0);
+    assert(height > 0);
+}
 
-        // SDL_SetWindowFullscreenMode(window, mode);
+EAppWindow::EAppWindow(
+    const std::string& title,
+    const EDisplayModeSPtr displayMode
+) : EAppWindow(
+    title,
+    displayMode->getWidth(),
+    displayMode->getHeight(),
+    SDL_WINDOW_FULLSCREEN | SDL_WINDOW_HIDDEN
+) {
+    assert(displayMode);
+
+    if (!displayMode) {
+        throw std::runtime_error(
+            "Failed to init SDL window due to a null fullscreen displayMode"
+        );
     }
+
+    if (!applyWindowFulscreenMode(displayMode)) {
+        std::string error = "Failed to init SDL window in a fullscreen displayMode, cannot apply fullscreen mode: ";
+        error += SDL_GetError();
+        throw std::runtime_error(error);
+    }
+
+    if (!show()) {
+        std::string error = "Failed to init SDL window in a fullscreen displayMode, cannot show window: ";
+        error += SDL_GetError();
+        throw std::runtime_error(error);
+    }
+}
+
+EAppWindow::EAppWindow(
+    const std::string& title,
+    const EDisplaySPtr display
+) {
+    assert(display);
+
+    if (!display) {
+        throw std::runtime_error(
+            "Failed to init SDL window due to a null fullscreen display"
+        );
+    }
+
+    auto desktopMode = display->getDesktopMode();
+    assert(desktopMode);
+
+    EAppWindow(
+        title,
+        desktopMode
+    );
 }
 
 EAppWindow::~EAppWindow() {
@@ -91,4 +149,68 @@ bool EAppWindow::show() {
 bool EAppWindow::isFullscreen() const {
     auto flags = SDL_GetWindowFlags(window);
     return (flags & SDL_WINDOW_FULLSCREEN) != 0;
+}
+
+bool EAppWindow::setFullscreen(
+    const bool isFullscreen
+) {
+    if (!SDL_SetWindowFullscreen(window, isFullscreen)) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to set a fullscreen mode for window: %s",
+                errorDesc
+            );
+        }
+        return false;
+    }
+
+    if (!SDL_SyncWindow(window)) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to set a fullscreen mode for window: %s",
+                errorDesc
+            );
+        }
+        return false;
+    }
+
+    return true;
+}
+
+bool EAppWindow::applyWindowFulscreenMode(
+    const EDisplayModeSPtr displayMode
+) {
+    assert(displayMode);
+
+    auto sdlDisplayMode = displayMode->getSDLDisplayMode();
+
+    if (!SDL_SetWindowFullscreenMode(window, sdlDisplayMode)) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to set a fullscreen display mode for window: %s",
+                errorDesc
+            );
+        }
+        return false;
+    }
+
+    if (!SDL_SyncWindow(window)) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to set a fullscreen display mode for window: %s",
+                errorDesc
+            );
+        }
+        return false;
+    }
+
+    return true;
 }

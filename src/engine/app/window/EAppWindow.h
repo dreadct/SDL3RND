@@ -7,6 +7,12 @@
 
 #include <SDL3/SDL.h>
 
+class EDisplay;
+typedef std::shared_ptr<EDisplay> EDisplaySPtr;
+
+class EDisplayMode;
+typedef std::shared_ptr<EDisplayMode> EDisplayModeSPtr;
+
 class EAppWindow;
 typedef std::unique_ptr<EAppWindow> EAppWindowUPtr;
 
@@ -15,15 +21,52 @@ private:
     // Private properties
     SDL_Window* window;
 
-public:
-    // Class lifecycle
-    EAppWindow() = delete;
+    // Private class lifecycle.
+
+    /// @brief Creates a window of a given size with a specified flags.
+    /// @param title A window title.
+    /// @param width A window width.
+    /// @param height A window height.
+    /// @param flags A flags for window.
     EAppWindow(
         const std::string& title,
         const uint32_t width,
         const uint32_t height,
-        const bool isFullscreen = false
+        SDL_WindowFlags flags
     );
+
+public:
+    // Class lifecycle
+
+    EAppWindow() = delete;
+
+    /// @brief Creates a usual window of a given size.
+    /// @param title A window title.
+    /// @param width A window width.
+    /// @param height A window height.
+    EAppWindow(
+        const std::string& title,
+        const uint32_t width,
+        const uint32_t height
+    );
+
+    /// @brief Creates a fullscreen window.
+    /// @param title A window title.
+    /// @param displayMode A custom display mode to use.
+    EAppWindow(
+        const std::string& title,
+        const EDisplayModeSPtr displayMode
+    );
+
+    /// @brief Creates a fullscreen window.
+    /// @param title A window title.
+    /// @param display A display to appear in fullscreen
+    ///                desktop mode on.
+    EAppWindow(
+        const std::string& title,
+        const EDisplaySPtr display
+    );
+
     ~EAppWindow();
 
     EAppWindow(const EAppWindow&) = delete;
@@ -48,4 +91,11 @@ public:
     bool show();
 
     bool isFullscreen() const;
+    bool setFullscreen(
+        const bool isFullscreen
+    );
+
+    bool applyWindowFulscreenMode(
+        const EDisplayModeSPtr displayMode
+    );
 };
