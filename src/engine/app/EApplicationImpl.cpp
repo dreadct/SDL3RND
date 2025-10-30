@@ -45,8 +45,12 @@ SDL_AppResult EApplication::Impl::init(
             );
         }
 
+        auto displays = displayService->getDisplays();
+
         // get a primary display
-        auto primaryDisplay = displayService->getPrimaryDisplay();
+        auto primaryDisplay = displays.empty()
+            ? displayService->getPrimaryDisplay()
+            : displays.back();
         if (primaryDisplay == nullptr) {
             SDL_LogError(
                 SDL_LOG_CATEGORY_APPLICATION,
