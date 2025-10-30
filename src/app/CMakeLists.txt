@@ -29,5 +29,5 @@ target_include_directories(${TARGET_NAME}
 
 # Linking
 target_link_libraries(${TARGET_NAME}
-    PRIVATE sdl::sdl engine
+    PRIVATE engine
 )
