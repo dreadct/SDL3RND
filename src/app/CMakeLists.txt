@@ -24,9 +24,10 @@ endif()
 # Includes
 target_include_directories(${TARGET_NAME}
     PRIVATE ${SDL3_INCLUDE_DIRS}
+    PUBLIC ${PROJECT_INCLUDE_DIR}
 )
 
 # Linking
 target_link_libraries(${TARGET_NAME}
-    PRIVATE SDL3::SDL3
+    PRIVATE SDL3::SDL3 engine
 )
