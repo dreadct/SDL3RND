@@ -1,13 +1,11 @@
 #include <engine/app/EApplication.h>
 
-#include <chrono>
 #include <string>
 #include <vector>
 
 #include "window/EAppWindow.h"
+#include "../clock/EClock.h"
 #include "../displays/EDisplayService.h"
-
-typedef std::chrono::high_resolution_clock HRClock;
 
 class EApplication::Impl {
 private:
@@ -16,7 +14,7 @@ private:
     EAppWindowUPtr appWindow;
     std::vector<std::string> commandLineArguments;
     EDisplayServiceSPtr displayService;
-    HRClock::time_point initTime;
+    ESClock::time_point initTime;
 
 public:
     // Class lifecycle

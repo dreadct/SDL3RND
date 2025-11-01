@@ -71,7 +71,7 @@ SDL_AppResult EApplication::Impl::init(
 
         appWindow = std::make_unique<EAppWindow>("", desktopDisplayMode);
 
-        initTime = std::chrono::high_resolution_clock::now();
+        initTime = ESClock::now();
 
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
@@ -95,7 +95,7 @@ SDL_AppResult EApplication::Impl::handleEvent(
 
 SDL_AppResult EApplication::Impl::iterate(
 ) noexcept {
-    const auto currentTime = HRClock::now();
+    const auto currentTime = ESClock::now();
     const auto intervalSinceInit = currentTime - initTime;
 
     return SDL_APP_CONTINUE;

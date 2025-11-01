@@ -19,6 +19,8 @@ set(TARGET_SOURCES
     # app window
     ${TARGET_SRC_DIR}/app/window/EAppWindow.h
     ${TARGET_SRC_DIR}/app/window/EAppWindow.cpp
+    # clock
+    ${TARGET_SRC_DIR}/clock/EClock.h
     # displays
     ${TARGET_SRC_DIR}/displays/EDisplay.h
     ${TARGET_SRC_DIR}/displays/EDisplay.cpp
