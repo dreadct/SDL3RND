@@ -7,6 +7,12 @@
 #include "../clock/EClock.h"
 #include "../displays/EDisplayService.h"
 
+class ERenderer;
+typedef std::shared_ptr<ERenderer> EBaseRendererSPtr;
+
+class ERendererFactory;
+typedef std::shared_ptr<ERendererFactory> ERendererFactorySPtr;
+
 class EApplication::Impl {
 private:
     // Private properties
@@ -15,6 +21,9 @@ private:
     std::vector<std::string> commandLineArguments;
     EDisplayServiceSPtr displayService;
     ESClock::time_point initTime;
+
+    EBaseRendererSPtr renderer;
+    ERendererFactorySPtr rendererFactory;
 
 public:
     // Class lifecycle
