@@ -214,3 +214,18 @@ bool EAppWindow::applyWindowFulscreenMode(
 
     return true;
 }
+
+SDL_PropertiesID EAppWindow::getProperties() const {
+    auto result = SDL_GetWindowProperties(window);
+    if (result == 0) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to get properties of a window: %s",
+                errorDesc
+            );
+        }
+    }
+    return result;
+}

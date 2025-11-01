@@ -98,4 +98,6 @@ public:
     bool applyWindowFulscreenMode(
         const EDisplayModeSPtr displayMode
     );
+
+    SDL_PropertiesID getProperties() const;
 };
