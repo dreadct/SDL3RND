@@ -14,7 +14,8 @@ class EDisplayMode;
 typedef std::shared_ptr<EDisplayMode> EDisplayModeSPtr;
 
 class EAppWindow;
-typedef std::unique_ptr<EAppWindow> EAppWindowUPtr;
+typedef std::shared_ptr<EAppWindow> EAppWindowSPtr;
+typedef std::weak_ptr<EAppWindow> EAppWindowWPtr;
 
 class EAppWindow {
 private:

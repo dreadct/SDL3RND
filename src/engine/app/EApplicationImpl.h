@@ -11,7 +11,7 @@ class EApplication::Impl {
 private:
     // Private properties
 
-    EAppWindowUPtr appWindow;
+    EAppWindowSPtr appWindow;
     std::vector<std::string> commandLineArguments;
     EDisplayServiceSPtr displayService;
     ESClock::time_point initTime;
