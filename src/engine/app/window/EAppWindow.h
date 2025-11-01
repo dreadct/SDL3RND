@@ -101,4 +101,6 @@ public:
     );
 
     SDL_PropertiesID getProperties() const;
+
+    SDL_Window* getSDLWindow() const;
 };

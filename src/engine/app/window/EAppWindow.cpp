@@ -229,3 +229,7 @@ SDL_PropertiesID EAppWindow::getProperties() const {
     }
     return result;
 }
+
+SDL_Window* EAppWindow::getSDLWindow() const {
+    return window;
+}
