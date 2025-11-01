@@ -31,6 +31,10 @@ set(TARGET_SOURCES
     # rendering
     ${TARGET_SRC_DIR}/rendering/ERenderer.h
     ${TARGET_SRC_DIR}/rendering/ERenderer.cpp
+    ${TARGET_SRC_DIR}/rendering/concrete/ESDLRenderer.h
+    ${TARGET_SRC_DIR}/rendering/concrete/ESDLRenderer.cpp
+    ${TARGET_SRC_DIR}/rendering/factory/ERendererFactory.h
+    ${TARGET_SRC_DIR}/rendering/factory/ERendererFactory.cpp
 )
 
 # Dependencies
