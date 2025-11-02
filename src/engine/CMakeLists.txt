@@ -28,6 +28,9 @@ set(TARGET_SOURCES
     ${TARGET_SRC_DIR}/displays/EDisplayMode.cpp
     ${TARGET_SRC_DIR}/displays/EDisplayService.h
     ${TARGET_SRC_DIR}/displays/EDisplayService.cpp
+    # platform/windows
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/platform/windows/HResultUtils.cpp>
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/platform/windows/HResultUtils.h>
     # rendering
     ${TARGET_SRC_DIR}/rendering/ERenderer.h
     ${TARGET_SRC_DIR}/rendering/ERenderer.cpp
