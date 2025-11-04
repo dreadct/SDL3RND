@@ -21,7 +21,7 @@ typedef std::vector<EDisplayModeSPtr> EDisplayModeSPtrVec;
 class EDisplay: public std::enable_shared_from_this<EDisplay> {
 private:
     // Private properties
-    
+
     SDL_DisplayID displayID;
 
 public:
@@ -46,4 +46,6 @@ public:
     EDisplayModeSPtrVec getFullscreenModes() const;
 
     std::string getName() const;
+
+    SDL_DisplayID getDisplayID() const;
 };

@@ -112,3 +112,7 @@ std::string EDisplay::getName() const {
 
     return cName;
 }
+
+SDL_DisplayID EDisplay::getDisplayID() const {
+    return displayID;
+}
