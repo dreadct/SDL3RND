@@ -103,4 +103,8 @@ public:
     SDL_PropertiesID getProperties() const;
 
     SDL_Window* getSDLWindow() const;
+
+    // Window relationships
+
+    EDisplaySPtr getDisplay() const;
 };
