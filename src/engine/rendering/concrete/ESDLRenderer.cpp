@@ -45,7 +45,7 @@ ESDLRenderer& ESDLRenderer::operator=(
 
 void ESDLRenderer::render(
     const ESClock::duration timeSinceInit
-) const {
+) {
     const auto secondSinceInit = (float)std::chrono::duration_cast<
         std::chrono::milliseconds
     >(timeSinceInit).count() / 1000.0f;

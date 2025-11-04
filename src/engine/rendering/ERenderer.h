@@ -41,5 +41,5 @@ public:
 
     virtual void render(
         const ESClock::duration timeSinceInit
-    ) const = 0;
+    ) = 0;
 };

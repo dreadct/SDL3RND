@@ -29,5 +29,5 @@ public:
 
     void render(
         const ESClock::duration timeSinceInit
-    ) const override;
+    ) override;
 };
