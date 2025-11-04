@@ -12,7 +12,8 @@
 
 ED3D9Renderer::ED3D9Renderer(
     EAppWindowSPtr window
-) : ERenderer(window) {
+) : ERenderer(window),
+    isDeviceLost(false) {
     assert(window);
 
     // get window HWND
@@ -36,7 +37,6 @@ ED3D9Renderer::ED3D9Renderer(
         throw std::runtime_error("Failed to init D3D9");
     }
 
-    D3DPRESENT_PARAMETERS d3dpp;
     ZeroMemory(&d3dpp, sizeof(d3dpp));
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
 	d3dpp.BackBufferWidth = (UINT)width;
@@ -86,7 +86,13 @@ ED3D9Renderer::ED3D9Renderer(
     ED3D9Renderer&& other
 ) : ERenderer(std::move(other)),
     direct3D(std::exchange(other.direct3D, nullptr)),
-    device(std::exchange(other.device, nullptr)) {
+    device(std::exchange(other.device, nullptr)),
+    isDeviceLost(std::exchange(other.isDeviceLost, false)) {
+    memcpy_s(
+        &d3dpp, sizeof(D3DPRESENT_PARAMETERS),
+        &other.d3dpp, sizeof(D3DPRESENT_PARAMETERS)
+    );
+    ZeroMemory(&other.d3dpp, sizeof(D3DPRESENT_PARAMETERS));
 }
 
 ED3D9Renderer& ED3D9Renderer::operator=(
@@ -95,6 +101,12 @@ ED3D9Renderer& ED3D9Renderer::operator=(
     ERenderer::operator=(std::move(other));
     direct3D = std::exchange(other.direct3D, nullptr);
     device = std::exchange(other.device, nullptr);
+    isDeviceLost = std::exchange(other.isDeviceLost, false);
+    memcpy_s(
+        &d3dpp, sizeof(D3DPRESENT_PARAMETERS),
+        &other.d3dpp, sizeof(D3DPRESENT_PARAMETERS)
+    );
+    ZeroMemory(&other.d3dpp, sizeof(D3DPRESENT_PARAMETERS));
     return *this;
 }
 
@@ -103,6 +115,30 @@ ED3D9Renderer& ED3D9Renderer::operator=(
 void ED3D9Renderer::render(
     const ESClock::duration timeSinceInit
 ) {
+    // ensure device is capable to work
+    HRESULT hResult = device->TestCooperativeLevel();
+    switch (hResult) {
+    case D3DERR_DEVICELOST:
+        // skip rendering on lost device
+        return;
+    case D3DERR_DEVICENOTRESET:
+        recoverLostDevice();
+        break;
+    default:
+        if (FAILED(hResult)) {
+            std::string errorFormat = "D3D9 renderer has a failed device state (0x%08X)";
+            std::string errorDesc;
+            if (getHResultErrorDescription(hResult, &errorDesc)) {
+                errorFormat += ": " + errorDesc;
+            }
+            SDL_LogError(
+                SDL_LOG_CATEGORY_RENDER,
+                errorFormat.c_str(),
+                hResult
+            );
+        }
+    }
+
     const auto secondSinceInit = (float)std::chrono::duration_cast<
         std::chrono::milliseconds
     >(timeSinceInit).count() / 1000.0f;
@@ -111,23 +147,93 @@ void ED3D9Renderer::render(
     const uint8_t green = (uint8_t)((float) (0.5 + 0.5 * SDL_sin(secondSinceInit + SDL_PI_D * 2 / 3)) * 255.0f);
     const uint8_t blue = (uint8_t)((float) (0.5 + 0.5 * SDL_sin(secondSinceInit + SDL_PI_D * 4 / 3)) * 255.0f);
 
-    device->Clear();
+    if (FAILED(hResult = device->Clear(
         0,
         nullptr,
         D3DCLEAR_TARGET,
         D3DCOLOR_XRGB(red, green, blue),
         1.0f,
         0
-    );
+    ))) {
+        std::string errorFormat = "D3D9 renderer failed to clear screen (0x%08X)";
+        std::string errorDesc;
+        if (getHResultErrorDescription(hResult, &errorDesc)) {
+            errorFormat += ": " + errorDesc;
+        }
+        SDL_LogError(
+            SDL_LOG_CATEGORY_RENDER,
+            errorFormat.c_str(),
+            hResult
+        );
+    }
 
-    device->BeginScene();
+    if (FAILED(hResult = device->BeginScene())) {
+        std::string errorFormat = "D3D9 renderer failed to begin scene (0x%08X)";
+        std::string errorDesc;
+        if (getHResultErrorDescription(hResult, &errorDesc)) {
+            errorFormat += ": " + errorDesc;
+        }
+        SDL_LogError(
+            SDL_LOG_CATEGORY_RENDER,
+            errorFormat.c_str(),
+            hResult
+        );
+    }
 
-    device->EndScene();
+    if (FAILED(hResult = device->EndScene())) {
+        std::string errorFormat = "D3D9 renderer failed to end scene (0x%08X)";
+        std::string errorDesc;
+        if (getHResultErrorDescription(hResult, &errorDesc)) {
+            errorFormat += ": " + errorDesc;
+        }
+        SDL_LogError(
+            SDL_LOG_CATEGORY_RENDER,
+            errorFormat.c_str(),
+            hResult
+        );
+    }
 
-    device->Present(
+    if (FAILED(hResult = device->Present(
         nullptr,
         nullptr,
         NULL,
         nullptr
-    );
+    ))) {
+        std::string errorFormat = "D3D9 renderer failed to present scene (0x%08X)";
+        std::string errorDesc;
+        if (getHResultErrorDescription(hResult, &errorDesc)) {
+            errorFormat += ": " + errorDesc;
+        }
+        SDL_LogError(
+            SDL_LOG_CATEGORY_RENDER,
+            errorFormat.c_str(),
+            hResult
+        );
+    }
+}
+
+// State management methods
+
+void ED3D9Renderer::recoverLostDevice() {
+    freeManagedResources();
+
+    HRESULT hResult = D3D_OK;
+    if (FAILED(hResult = device->Reset(&d3dpp))) {
+        std::string error = "D3D9 renderer failed to reset device";
+        std::string errorDesc;
+        if (getHResultErrorDescription(hResult, &errorDesc)) {
+            error += ": " + errorDesc;
+        }
+        SDL_LogError(SDL_LOG_CATEGORY_RENDER, error.c_str());
+    }
+
+    acquireManagedResources();
+}
+
+// Resources management methods
+
+void ED3D9Renderer::acquireManagedResources() {
+}
+
+void ED3D9Renderer::freeManagedResources() {
 }

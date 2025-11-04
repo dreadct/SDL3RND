@@ -4,13 +4,28 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+
+#include "../../clock/EClock.h"
 #include "../ERenderer.h"
 
 class ED3D9Renderer: public ERenderer {
 private:
     // Private properties
+    D3DPRESENT_PARAMETERS d3dpp;
     LPDIRECT3D9 direct3D;
     LPDIRECT3DDEVICE9 device;
+
+    // State properties
+    bool isDeviceLost;
+
+    // Resources management methods
+
+    void acquireManagedResources();
+    void freeManagedResources();
+
+    // State management methods
+
+    void recoverLostDevice();
 
 public:
     // Class lifecycle
