@@ -19,6 +19,8 @@ set(TARGET_SOURCES
     # app window
     ${TARGET_SRC_DIR}/app/window/EAppWindow.h
     ${TARGET_SRC_DIR}/app/window/EAppWindow.cpp
+    # clock
+    ${TARGET_SRC_DIR}/clock/EClock.h
     # displays
     ${TARGET_SRC_DIR}/displays/EDisplay.h
     ${TARGET_SRC_DIR}/displays/EDisplay.cpp
@@ -26,6 +28,18 @@ set(TARGET_SOURCES
     ${TARGET_SRC_DIR}/displays/EDisplayMode.cpp
     ${TARGET_SRC_DIR}/displays/EDisplayService.h
     ${TARGET_SRC_DIR}/displays/EDisplayService.cpp
+    # platform/windows
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/platform/windows/HResultUtils.cpp>
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/platform/windows/HResultUtils.h>
+    # rendering
+    ${TARGET_SRC_DIR}/rendering/ERenderer.h
+    ${TARGET_SRC_DIR}/rendering/ERenderer.cpp
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/rendering/concrete/ED3D9Renderer.h>
+    $<$<PLATFORM_ID:Windows>:${TARGET_SRC_DIR}/rendering/concrete/ED3D9Renderer.cpp>
+    ${TARGET_SRC_DIR}/rendering/concrete/ESDLRenderer.h
+    ${TARGET_SRC_DIR}/rendering/concrete/ESDLRenderer.cpp
+    ${TARGET_SRC_DIR}/rendering/factory/ERendererFactory.h
+    ${TARGET_SRC_DIR}/rendering/factory/ERendererFactory.cpp
 )
 
 # Dependencies
@@ -45,5 +59,7 @@ target_include_directories(${TARGET_NAME}
 
 # Linking
 target_link_libraries(${TARGET_NAME}
-    PRIVATE sdl::sdl
+    PRIVATE
+    sdl::sdl
+    $<$<PLATFORM_ID:Windows>:d3d9.lib>
 )

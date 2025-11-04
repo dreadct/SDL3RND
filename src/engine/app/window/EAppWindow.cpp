@@ -214,3 +214,43 @@ bool EAppWindow::applyWindowFulscreenMode(
 
     return true;
 }
+
+SDL_PropertiesID EAppWindow::getProperties() const {
+    auto result = SDL_GetWindowProperties(window);
+    if (result == 0) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to get properties of a window: %s",
+                errorDesc
+            );
+        }
+    }
+    return result;
+}
+
+SDL_Window* EAppWindow::getSDLWindow() const {
+    return window;
+}
+
+// Window relationships
+
+EDisplaySPtr EAppWindow::getDisplay() const {
+    SDL_DisplayID displayID = 0;
+    if ((displayID = SDL_GetDisplayForWindow(
+        window
+    )) == 0) {
+        auto errorDesc = SDL_GetError();
+        if (errorDesc != nullptr) {
+            SDL_LogError(
+                SDL_LOG_CATEGORY_VIDEO,
+                "Failed to get a dispaly for a window: %s",
+                errorDesc
+            );
+        }
+        return nullptr;
+    }
+
+    return std::make_shared<EDisplay>(displayID);
+}

@@ -2,6 +2,9 @@
 
 #include <utility>
 
+#include "../rendering/ERenderer.h"
+#include "../rendering/factory/ERendererFactory.h"
+
 // Class lifecycle
 
 EApplication::Impl::Impl(
@@ -45,6 +48,8 @@ SDL_AppResult EApplication::Impl::init(
             );
         }
 
+        // setup window
+
         auto displays = displayService->getDisplays();
 
         // get a primary display
@@ -71,7 +76,12 @@ SDL_AppResult EApplication::Impl::init(
 
         appWindow = std::make_unique<EAppWindow>("", desktopDisplayMode);
 
-        initTime = std::chrono::high_resolution_clock::now();
+        // setup renderer
+
+        rendererFactory = std::make_shared<ERendererFactory>(appWindow);
+        renderer = rendererFactory->makeRenderer();
+
+        initTime = ESClock::now();
 
         return SDL_APP_CONTINUE;
     } catch (const std::exception& e) {
@@ -95,8 +105,10 @@ SDL_AppResult EApplication::Impl::handleEvent(
 
 SDL_AppResult EApplication::Impl::iterate(
 ) noexcept {
-    const auto currentTime = HRClock::now();
+    const auto currentTime = ESClock::now();
     const auto intervalSinceInit = currentTime - initTime;
+
+    renderer->render(intervalSinceInit);
 
     return SDL_APP_CONTINUE;
 }
