@@ -4,7 +4,9 @@
 
 #include "../../app/window/EAppWindow.h"
 #include "../ERenderer.h"
+#ifdef _WIN32
 #include "../concrete/ED3D9Renderer.h"
+#endif
 #include "../concrete/ESDLRenderer.h"
 
 // Class lifecycle
